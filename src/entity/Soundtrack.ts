@@ -19,6 +19,9 @@ export class Soundtrack {
     @Column()
     mp3FileLink: string
 
+    @Column()
+    musicVideoID: string
+
     @ManyToOne(() => MusicCategories, (category) => category.soundtracks)
     category: MusicCategories
 
