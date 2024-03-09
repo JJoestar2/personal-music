@@ -24,9 +24,9 @@ app.use(express.json());
 const controllers: RegistrableController[] = container.getAll<RegistrableController>(TYPES.Controller);
 controllers.forEach(controller => controller.register(app));
 
-AppDataSource.initialize()
-    .then(() => console.log('started db'))
-    .catch((error) => console.log(error))
+// AppDataSource.initialize()
+//     .then(() => console.log('started db'))
+//     .catch((error) => console.log(error))
 
 app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
     res.status(500).send('Internal Server Error');
