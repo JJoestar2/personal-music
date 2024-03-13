@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, BaseEntity } from "typeorm";
 import { MusicCategories, MusicCollection } from ".";
 
 
 @Entity()
-export class Soundtrack {
+export class Soundtrack extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number

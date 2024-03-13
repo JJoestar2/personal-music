@@ -13,7 +13,13 @@ export class SoundtrackController implements RegistrableController {
         app
         .route('/soundtrack')
         .post(async(req: express.Request, res: express.Response) => {
-            // todo add saving logic 
+            const { link, categoryId } = req.body;
+            try {
+               const soundtrack = await this.service.saveSoundtrack({ link, categoryId });
+               res.json(soundtrack); 
+            } catch (err) {
+                res.json({ 'message': `something wrong: ${err}` });
+            }
         })
     }
 }

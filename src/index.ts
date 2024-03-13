@@ -6,6 +6,7 @@ import { AppDataSource } from './data-source';
 import { RegistrableController } from './controllers/RegistrableController';
 import TYPES from './types';
 import container from './inversify.config';
+import { createAxiosInstance } from './axiosClient';
 
 dotenv.config();
 
@@ -24,9 +25,16 @@ app.use(express.json());
 const controllers: RegistrableController[] = container.getAll<RegistrableController>(TYPES.Controller);
 controllers.forEach(controller => controller.register(app));
 
-// AppDataSource.initialize()
-//     .then(() => console.log('started db'))
-//     .catch((error) => console.log(error))
+export const client = createAxiosInstance({
+    headers: {
+        'X-RapidAPI-Key': process.env.YOUTUBE_MP3_API_KEY,
+        'X-RapidAPI-Host': 'youtube-mp36.p.rapidapi.com'
+    }
+});
+
+AppDataSource.initialize()
+    .then(() => console.log('started db'))
+    .catch((error) => console.log(error))
 
 app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
     res.status(500).send('Internal Server Error');

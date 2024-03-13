@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Soundtrack } from ".";
 
 @Entity()
-export class MusicCollection {
+export class MusicCollection extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number
