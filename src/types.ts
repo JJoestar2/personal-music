@@ -1,9 +1,11 @@
 const TYPES = {
-// todo add other types for controllers
  Controller: Symbol('Controller'),
  SoundtrackService: Symbol('SoundtrackService'),
- Soundtrack: Symbol('Soundtrack'),
+ CategoryService: Symbol('CategoryService'),
+ CollectionService: Symbol('CollectionService'),
  SoundtrackRepository: Symbol('SoundtrackRepository'),
+ CategoryRepository: Symbol('CategoryRepository'),
+ CollectionRepository: Symbol('CollectionRepository'),
 };
 
 export default TYPES;

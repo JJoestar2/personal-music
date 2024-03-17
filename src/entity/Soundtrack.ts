@@ -1,9 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToOne,
+    ManyToMany,
+    JoinTable,
+    BaseEntity,
+} from "typeorm";
 import { MusicCategories, MusicCollection } from ".";
 
 
 @Entity()
-export class Soundtrack {
+export class Soundtrack extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -25,6 +33,7 @@ export class Soundtrack {
     @ManyToOne(() => MusicCategories, (category) => category.soundtracks)
     category: MusicCategories
 
-    @OneToMany(() => MusicCollection, (collection) => collection.soundtrack)
-    collection: MusicCollection
+    @ManyToMany(() => MusicCollection, collection => collection.soundtracks)
+    @JoinTable()
+    collections: MusicCollection[];
 }
