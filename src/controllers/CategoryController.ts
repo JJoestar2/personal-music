@@ -8,17 +8,36 @@ import TYPES from '../types';
 class CategoryController implements RegistrableController {
     constructor(@inject(TYPES.CategoryService) private service: CategoryService) {}
     public register(app: express.Application): void {
-        app
-        .route('/category')
-        .get(async(req: express.Request, res: express.Response) => {
-            const categories = await this.service.getCategories();
-            if (categories) res.json(categories);
+        app.route('/category')
+        .get(async (req: express.Request, res: express.Response) => {
+            try {
+                const result = await this.service.getCategories();
+                result.success ? res.json(result) : res.status(404).json(result);
+            } catch (error) {
+                console.error('Error getting categories:', error);
+                res.status(500).json({ success: false, message: 'Error getting categories' });
+            }
         })
-        .post(async(req: express.Request, res: express.Response) => {
+        .post(async (req: express.Request, res: express.Response) => {
             const { name } = req.body;
-            const category = await this.service.addCategory({ name });
-            if (category) {
-                res.json(category);  
+            try {
+                const result = await this.service.addCategory({ name });
+                result.success ? res.status(201).json(result) : res.status(400).json(result);
+            } catch (error) {
+                console.error('Error adding category:', error);
+                res.status(500).json({ success: false, message: 'Error adding category' });
+            }
+        })
+
+        app.route('/category/:id')
+        .delete(async (req: express.Request, res: express.Response) => {
+            const { id } = req.params;
+            try {
+                const result = await this.service.deleteCategory(parseInt(id));
+                result.success ? res.json(result) : res.status(404).json(result);
+            } catch (error) {
+                console.error('Error deleting soundtrack:', error);
+                res.status(500).json({ success: false, message: 'Error deleting soundtrack' });
             }
         });
     }

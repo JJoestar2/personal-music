@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Soundtrack } from ".";
 
 @Entity()
@@ -15,6 +15,6 @@ export class MusicCollection extends BaseEntity {
     @Column()
     poster: string
 
-    @ManyToOne(() => Soundtrack, (soundtrack) => soundtrack.collection)
-    soundtrack: Soundtrack[]
+    @ManyToMany(() => Soundtrack, soundtrack => soundtrack.collections)
+    soundtracks: Soundtrack[];
 }

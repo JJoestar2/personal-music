@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, BaseEntity } from "typeorm";
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToOne,
+    ManyToMany,
+    JoinTable,
+    BaseEntity,
+} from "typeorm";
 import { MusicCategories, MusicCollection } from ".";
 
 
@@ -25,6 +33,7 @@ export class Soundtrack extends BaseEntity {
     @ManyToOne(() => MusicCategories, (category) => category.soundtracks)
     category: MusicCategories
 
-    @OneToMany(() => MusicCollection, (collection) => collection.soundtrack)
-    collection: MusicCollection
+    @ManyToMany(() => MusicCollection, collection => collection.soundtracks)
+    @JoinTable()
+    collections: MusicCollection[];
 }

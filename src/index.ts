@@ -18,13 +18,6 @@ const corsOptions = {
 
 const app: express.Application = express();
 
-app.use(cors(corsOptions));
-app.use(express.json());
-
-// grabs the Controller from IoC container and registers all the endpoints
-const controllers: RegistrableController[] = container.getAll<RegistrableController>(TYPES.Controller);
-controllers.forEach(controller => controller.register(app));
-
 export const client = createAxiosInstance({
     headers: {
         'X-RapidAPI-Key': process.env.YOUTUBE_MP3_API_KEY,
@@ -32,13 +25,24 @@ export const client = createAxiosInstance({
     }
 });
 
-AppDataSource.initialize()
-    .then(() => console.log('started db'))
-    .catch((error) => console.log(error))
-
-app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(500).send('Internal Server Error');
-});
+const main = () => {
+    app.use(cors(corsOptions));
+    app.use(express.json());
     
+    // grabs the Controller from IoC container and registers all the endpoints
+    const controllers: RegistrableController[] = container.getAll<RegistrableController>(TYPES.Controller);
+    controllers.forEach(controller => controller.register(app));
+    
+    AppDataSource.initialize()
+        .then(() => console.log('started db'))
+        .catch((error) => console.log(error))
+    
+    app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
+        res.status(500).send('Internal Server Error');
+    });
+        
+    
+    app.listen(PORT, () => console.log(`Server running at: ${PORT}`));
+};
 
-app.listen(PORT, () => console.log(`Server running at: ${PORT}`));
+main();
