@@ -9,7 +9,7 @@ interface IServiceResponse<T> {
     message?: string;
 }  
 export interface ICategoryService {
-    getCategories(): Promise<IServiceResponse<MusicCategories[]>>;
+    getCategories(page: number, limit: number): Promise<IServiceResponse<{categories: MusicCategories[], total: number}>>;
     addCategory(data: CategoryData): Promise<IServiceResponse<MusicCategories>>;
     deleteCategory(categoryId: number): Promise<IServiceResponse<null>>;
 }
@@ -18,9 +18,9 @@ export interface ICategoryService {
 export default class CategoryService implements ICategoryService {
     constructor(@inject(TYPES.CategoryRepository) private repository: CategoryRepository) {}
 
-    public async getCategories(): Promise<IServiceResponse<MusicCategories[]>> {
+    public async getCategories(page: number = 1, limit: number = 10): Promise<IServiceResponse<{categories: MusicCategories[], total: number}>> {
         try {
-            const response = await this.repository.getAllCategories();
+            const response = await this.repository.getAllCategories(page, limit);
             return { success: true, data: response.data, message: response.message };
         } catch (error) {
             console.error('Error getting categories:', error);

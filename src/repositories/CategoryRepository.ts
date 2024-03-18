@@ -8,7 +8,7 @@ export type CategoryData = {
 };
 
 export interface ICategoryRepository {
-  getAllCategories(): Promise<{ success: boolean; data?: MusicCategories[]; message?: string }>;
+  getAllCategories(page: number, limit: number): Promise<{ success: boolean; data?: { categories: MusicCategories[], total: number }; message?: string }>;
   createNewCategory(data: CategoryData): Promise<{ success: boolean; data?: MusicCategories; message?: string }>;
   deleteCategory(id: number): Promise<{ success: boolean; message?: string }>;
 }
@@ -16,11 +16,14 @@ export interface ICategoryRepository {
 @injectable()
 export default class CategoryRepository implements ICategoryRepository {
 
-  public async getAllCategories(): Promise<{ success: boolean; data?: MusicCategories[]; message?: string }> {
+  public async getAllCategories(page: number = 1, limit: number = 10): Promise<{ success: boolean; data?: { categories: MusicCategories[], total: number }; message?: string }> {
     try {
       const categoryRepo = AppDataSource.getRepository(MusicCategories);
-      const categories = await categoryRepo.find();
-      return { success: true, data: categories };
+      const [categories, total] = await categoryRepo.findAndCount({
+        skip: (page - 1) * limit,
+        take: limit,
+    });
+      return { success: true, data: { categories, total } };
     } catch (error) {
       console.error('Error getting all categories:', error);
       return { success: false, message: 'Error getting all categories' };

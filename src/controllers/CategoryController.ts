@@ -11,7 +11,8 @@ class CategoryController implements RegistrableController {
         app.route('/category')
         .get(async (req: express.Request, res: express.Response) => {
             try {
-                const result = await this.service.getCategories();
+                const { page, limit } = req.query;
+                const result = await this.service.getCategories(Number(page || 1), Number(limit || 10));
                 result.success ? res.json(result) : res.status(404).json(result);
             } catch (error) {
                 console.error('Error getting categories:', error);
