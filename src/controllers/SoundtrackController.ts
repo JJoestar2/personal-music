@@ -13,7 +13,8 @@ export class SoundtrackController implements RegistrableController {
         app.route('/soundtrack')
         .get(async (req: express.Request, res: express.Response) => {
             try {
-                const result = await this.service.getSoundtracks();
+                const { page, limit } = req.query;
+                const result = await this.service.getSoundtracks(Number(page || 1), Number(limit || 10));
                 result.success ? res.json(result) : res.status(404).json(result);
             } catch (error) {
                 console.error('Error retrieving soundtrack:', error);

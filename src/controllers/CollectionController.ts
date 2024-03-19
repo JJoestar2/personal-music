@@ -11,8 +11,9 @@ class CollectionController implements RegistrableController {
     public register(app: express.Application): void {
         app.route('/collection')
         .get(async (req: express.Request, res: express.Response) => {
+            const { page, limit } = req.query;
             try {
-                const result = await this.service.findAll();
+                const result = await this.service.findAll(Number(page || 1), Number(limit || 10));
                 result.success ? res.json(result) : res.status(404).json(result);
             } catch (error) {
                 console.error('Error getting collections:', error);

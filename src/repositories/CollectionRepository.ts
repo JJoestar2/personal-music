@@ -14,7 +14,7 @@ type CollectionResponse = {
 };
 
 export interface ICollectionRepository {
-  findAll(): Promise<CollectionResponse>;
+  findAll(page: number, limit: number): Promise<CollectionResponse>;
   findById(collectionId: number): Promise<CollectionResponse>;
   createCollection(data: { name: string, poster: string }): Promise<CollectionResponse>;
   addSoundtrackToCollection(collectionId: number, soundtrackId: number): Promise<CollectionResponse>;
@@ -25,10 +25,14 @@ export interface ICollectionRepository {
 
 @injectable()
 export default class CollectionRepository implements ICollectionRepository {
-  public async findAll(): Promise<CollectionResponse> {
+  public async findAll(page: number = 1, limit: number = 10): Promise<CollectionResponse> {
     try {
       const collectionRepo = AppDataSource.getRepository(MusicCollection);
-      return { success: true, collection: await collectionRepo.find({ relations: ['soundtracks'] }) };
+      const [collection, total] = await collectionRepo.findAndCount({
+        skip: (page - 1) * limit,
+        take: limit,
+    });
+      return { success: true, collection };
     } catch (err) {
       return { success: false, message: 'Error fetching collections' };
     }

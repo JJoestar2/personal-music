@@ -13,7 +13,7 @@ export type SoundtrackData = {
 };
 
 export interface ISoundtrackRepository {
-  getAllSoundtracks(): Promise<{ success: boolean; data?: Soundtrack[]; message?: string }>;
+  getAllSoundtracks(page: number, limit: number): Promise<{ success: boolean; data?: { soundtracks: Soundtrack[], total: number}; message?: string }>;
   getSoundtrackById(soundtrackId: number): Promise<{ success: boolean; data?: Soundtrack; message?: string }>;
   createNewSoundtrack(data: SoundtrackData): Promise<{ success: boolean; data?: Soundtrack; message?: string }>;
   updateSoundtrack(soundtrackId: number, data: SoundtrackData): Promise<{ success: boolean; message?: string; data?: Soundtrack }>;
@@ -23,11 +23,15 @@ export interface ISoundtrackRepository {
 @injectable()
 export default class SoundtrackRepository implements ISoundtrackRepository {
 
-  public async getAllSoundtracks(): Promise<{ success: boolean; data?: Soundtrack[]; message?: string }> {
+  public async getAllSoundtracks(page: number = 1, limit: number = 10): Promise<{ success: boolean; data?: { soundtracks: Soundtrack[], total: number}; message?: string }> {
     try {
       const soundtrackRepo = AppDataSource.getRepository(Soundtrack);
-      const soundtracks = await soundtrackRepo.find({ relations: { category: true } });
-      return { success: true, data: soundtracks };
+      const [soundtracks, total] = await soundtrackRepo.findAndCount({
+        relations: { category: true },
+        skip: (page - 1) * limit,
+        take: limit,
+    });
+      return { success: true, data: { soundtracks, total } };
     } catch (error) {
       console.error('Error getting all soundtracks:', error);
       return { success: false, message: 'Error getting all soundtracks' };

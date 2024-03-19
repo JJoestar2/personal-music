@@ -20,7 +20,7 @@ interface IServiceResponse<T> {
 
 export interface ISoundtrackService {
     createSoundtrack(soundtrackData: SoundtrackNewData): Promise<IServiceResponse<Soundtrack>>;
-    getSoundtracks(): Promise<IServiceResponse<Soundtrack[]>>;
+    getSoundtracks(page: number, limit: number): Promise<IServiceResponse<{soundtracks: Soundtrack[], total: number}>>
     getSoundtrackById(soundtrackId: number): Promise<IServiceResponse<Soundtrack>>;
     updateSoundtrack(soundtrackId: number, soundtrackData: SoundtrackData): Promise<IServiceResponse<Soundtrack>>;
     deleteSoundtrack(soundtrackId: number): Promise<IServiceResponse<null>>;
@@ -68,9 +68,9 @@ class SoundtrackService implements ISoundtrackService {
         }
     }
 
-    public async getSoundtracks(): Promise<IServiceResponse<Soundtrack[]>> {
+    public async getSoundtracks(page: number = 1, limit: number = 10): Promise<IServiceResponse<{soundtracks: Soundtrack[], total: number}>> {
         try {
-            const response = await this.repository.getAllSoundtracks();
+            const response = await this.repository.getAllSoundtracks(page, limit);
             return response;
         } catch (error) {
             console.error('Error getting soundtracks:', error);

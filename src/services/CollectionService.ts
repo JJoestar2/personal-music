@@ -10,7 +10,7 @@ interface IServiceResponse<T> {
 }  
 
 export interface ICollectionService {
-    findAll(): Promise<IServiceResponse<MusicCollection[]>>;
+    findAll(page: number, limit: number): Promise<IServiceResponse<MusicCollection[]>>;
     findById(id: number): Promise<IServiceResponse<MusicCollection>>;
     createCollection(collectionData: Partial<MusicCollection>): Promise<IServiceResponse<MusicCollection>>;
     updateCollection(id: number, collectionData: Partial<MusicCollection>): Promise<IServiceResponse<MusicCollection | null>>;
@@ -23,9 +23,9 @@ export interface ICollectionService {
 export default class CollectionService implements ICollectionService {
     constructor(@inject(TYPES.CollectionRepository) private repository: CollectionRepository) {}
 
-  public async findAll(): Promise<IServiceResponse<MusicCollection[]>> {
+  public async findAll(page: number = 1, limit: number = 10): Promise<IServiceResponse<MusicCollection[]>> {
     try {
-      const collections = await this.repository.findAll();
+      const collections = await this.repository.findAll(page, limit);
       return { ...collections };
     } catch (error) {
       console.error('Error finding collections:', error);
